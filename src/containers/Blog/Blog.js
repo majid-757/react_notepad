@@ -1,5 +1,6 @@
 import React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from '../../axios';
 
 import Post from '../../components/Post/Post'
 import FullPost from '../../components/FullPost/FullPost'
@@ -14,10 +15,11 @@ class Blog extends React.Component {
     state = {
         posts: [],
         selectedPostId: null,
+        error: false,
     }
 
     componentDidMount() {
-        axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => {
+        axios.get('/posts').then((response) => {
             const posts = response.data.slice(0, 4)
             const updatedPosts = posts.map((item) => {
                 return {
@@ -28,6 +30,10 @@ class Blog extends React.Component {
 
             this.setState({ posts: updatedPosts })
         })
+
+        .catch((err) => {
+            this.setState({ error: true })
+        })
     }
 
     selectPostHandler = (id) => {
@@ -35,14 +41,16 @@ class Blog extends React.Component {
     }
 
     render() {
-
-        const posts = this.state.posts.map((item) => {
-            return <Post key={item.id} title={item.title} author={item.author} 
-            click={() => this.selectPostHandler(item.id)}
-            
-            />
-        })
-
+        let posts = <p style={{textAlign: 'center'}}>Feching data failed !</p>
+        if (!this.state.error) {
+            posts = this.state.posts.map((item) => {
+                return <Post key={item.id} title={item.title} author={item.author} 
+                click={() => this.selectPostHandler(item.id)}
+                
+                />
+            })
+        }
+        
         return (
             <div>
                 <section className='posts'>{posts}</section>

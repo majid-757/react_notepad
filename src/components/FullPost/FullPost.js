@@ -16,17 +16,23 @@ class FullPost extends React.Component {
                 !== this.props.id)) 
 
             
-            axios.get(`https://jsonplaceholder.typicode.com/posts/${this.props.id}`)
+            axios.get(`/posts/${this.props.id}`)
                 .then((response) => {
                     this.setState({ loadedPost: response.data })
                 })
         }
     }
 
+    deletePostHandler = () => {
+        axios.delete(`/posts/${this.props.id}`)
+            .then((response) => {
+                console.log(response)
+        })
+    }
     render() {
         let post = <p style={{ textAlign: 'center' }}>Please Select Post</p>
         if (this.props.id) {
-            post = <p>Loading...</p>
+            post = <p style={{textAlign: 'center'}}>Loading...</p>
         }
         if (this.state.loadedPost) {
             post = (
@@ -34,7 +40,7 @@ class FullPost extends React.Component {
                     <h2>{this.state.loadedPost.title}</h2>
                     <p>{this.state.loadedPost.body}</p>
                     <div>
-                        <button className='delete'>Delete</button>
+                        <button onClick={this.deletePostHandler} className='delete'>Delete</button>
                     </div>
                 </div>
                 
