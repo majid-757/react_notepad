@@ -1,73 +1,41 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
+import { Route, Link, Switch, Redirect } from 'react-router-dom'
 
-
-import Post from '../../components/Post/Post'
-import FullPost from '../../components/FullPost/FullPost'
-import NewPost from '../../components/NewPost/NewPost'
-
+import Posts from './Posts/Posts'
+import NewPost from './NewPost/NewPost'
+import FullPost from './FullPost/FullPost'
 
 import './Blog.css'
 
-
 class Blog extends React.Component {
-
-    state = {
-        posts: [],
-        selectedPostId: null,
-        error: false,
-    }
-
-    componentDidMount() {
-        axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => {
-            const posts = response.data.slice(0, 4)
-            const updatedPosts = posts.map((item) => {
-                return {
-                    ...item,
-                    author: 'Majid',
-                }
-            })
-
-            this.setState({ posts: updatedPosts })
-        })
-
-        .catch((err) => {
-            this.setState({ error: true })
-        })
-    }
-
-    selectPostHandler = (id) => {
-        this.setState({ selectedPostId: id })
-    }
-
-    render() {
-        let posts = <p style={{textAlign: 'center'}}>Feching data failed !</p>
-        if (!this.state.error) {
-            posts = this.state.posts.map((item) => {
-                return <Post key={item.id} title={item.title} author={item.author} 
-                click={() => this.selectPostHandler(item.id)}
-                
-                />
-            })
-        }
-        
-        return (
-            <div>
-                <section className='posts'>{posts}</section>
-                <section>
-                    <FullPost id={this.state.selectedPostId}/>
-                </section>
-                <section>
-                    <NewPost />
-                </section>
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div className="blog">
+        <header>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to={{
+                  pathname: '/new-post',
+                  search: '?sort=post',
+                }}>New Post</Link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        <Switch>
+          <Route path="/" component={Posts} />
+          <Route path="/new-post" component={NewPost} />
+          <Route path="/test" render={() => <h2>Testing</h2>} />
+          <Route path="/:id" exact component={FullPost} />
+          <Redirect from="/test" to="/" />
+        </Switch>
+      </div>
+    )
+  }
 }
 
-
-
 export default Blog
-
-
-
