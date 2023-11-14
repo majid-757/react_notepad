@@ -9,6 +9,7 @@ class NewPost extends React.Component {
     title: '',
     content: '',
     author: 'Masood',
+    submited: false,
   }
 
   componentDidMount = () => {
@@ -25,12 +26,21 @@ class NewPost extends React.Component {
       .post('https://jsonplaceholder.typicode.com/posts', data)
       .then((response) => {
         console.log(response)
+        this.setState({ submited: true })
       })
   }
 
   render() {
+
+    let redirect = null
+
+    if(this.state.submited) {
+      redirect = <Redirect to="/" />
+    }
+
     return (
       <div className="new-post">
+        { redirect }
         <h2>Add a Post</h2>
         <label>Title</label>
         <input
